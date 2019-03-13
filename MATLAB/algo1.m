@@ -8,19 +8,36 @@ for i = 1:N
     end
 end
 
-%% Create conflict graph
-% Do we need to?
-
 %% Actual algorithm
 K = 1;
+Q = {};
 while ~isempty(linkset)
-    % Remove a link from link set, add it to Q_k
-    Q_k = linkset(1,:);
+    % Remove a link from link set, add it to Q{K}
+    Q{K} = linkset(1,:);
     linkset = linkset(2:end,:);
-    for i = 1:length(linkset)
-        % TO DO: lines 6-8. Here l_pq is linkset(i,:).
+    i = 1;
+    while 1
+        if i > size(linkset,1)
+            break;
+        end
+        % If no common vertex bw Q{K} and i-th link
+        if ~any(Q{K}==linkset(i,:),'all')
+            % Add i-th link to Q{K} and remove it from linkset
+            Q{K} = [Q{K}; linkset(i,:)];
+            linkset = [linkset(1:(i-1),:); linkset((i+1):end,:)];
+        else
+            i = i+1;
+        end
     end
     K = K + 1;
 end
-
-% TO DO: Rest of the algorithm (lines 12-17)
+initial_schedule = zeros(N);
+for k = 1:length(Q)
+    for m = 1:size(Q{k},1)
+        for n = 1:size(Q{k},1)
+            % For any two links in Q{k}, do as given in algorithm
+            idx = sub2ind([N N],Q{k}(m,:),Q{k}(n,:));
+            initial_schedule(idx) = deal(1);
+        end
+    end
+end
