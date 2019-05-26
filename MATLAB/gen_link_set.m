@@ -1,4 +1,4 @@
-tx_threshold = sqrt(1.5^2+.75^2);
+tx_threshold = sqrt(3^2+1.5^2);
 link_set = [];
 for i = 1:N
     for j = 1:N
